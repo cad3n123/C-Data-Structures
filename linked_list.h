@@ -1,5 +1,6 @@
 #pragma once
 
+#include "string.h"
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -26,3 +27,5 @@ bool linkedListInitialize(LinkedList *linkedList, size_t elementSize);
 bool linkedListPushBack(LinkedList *linkedList, const void *item);
 bool linkedListPopFront(LinkedList *linkedList, void *const out);
 void linkedListFree(LinkedList *linkedList);
+size_t linkedListByteSize(LinkedList *linkedList);
+String linkedListToString(LinkedList *linkedList, String (*elementToString)(const void *element));

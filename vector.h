@@ -18,3 +18,4 @@ bool vectorSetCapacity(Vector *vector, size_t newCapacity);
 void *vectorPop(Vector *vector, void *out);
 void vectorFree(Vector *vector);
 bool vectorAppend(Vector *destination, Vector *source);
+size_t vectorByteSize(Vector *vector);

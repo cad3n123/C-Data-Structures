@@ -1,4 +1,5 @@
 #include "linked_list.h"
+#include "string.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
@@ -65,4 +66,25 @@ void linkedListFree(LinkedList *linkedList)
         ;
 
     linkedList->elementSize = 0;
+}
+
+String linkedListToString(LinkedList *linkedList, String (*elementToString)(const void *element))
+{
+    String result = stringFromCString("[ ");
+
+    LinkedListNode *node = linkedList->start;
+
+    while (node != NULL)
+    {
+        String elementAsString = elementToString(&node->value);
+        stringPushMany(&result, elementAsString.start);
+        stringFree(&elementAsString);
+        node = node->next;
+        if (node != NULL)
+            stringPushMany(&result, ", ");
+    }
+
+    stringPushMany(&result, " ]");
+
+    return result;
 }

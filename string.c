@@ -17,7 +17,12 @@ String stringFromCString(const char *chars)
 
 bool stringPush(String *string, char c)
 {
-    return vectorPush(string, &c);
+    if (string->length > 0)
+        string->length--;
+    if (!vectorPush(string, &c))
+        return false;
+    char nullChar = '\0';
+    return vectorPush(string, &nullChar);
 }
 
 bool stringPushMany(String *string, const char *chars)
@@ -42,4 +47,34 @@ void stringFree(String *string)
 bool stringAppend(String *destination, String *source)
 {
     return vectorAppend(destination, source);
+}
+
+String vectorToString(Vector *vector, String (*elementToString)(const void *element))
+{
+    String result = stringFromCString("[ ");
+
+    size_t byteSize = vectorByteSize(vector);
+    for (size_t i = 0; i < byteSize; i += vector->elementSize)
+    {
+        String elementAsString = elementToString((char *)vector->start + i);
+        stringPushMany(&result, elementAsString.start);
+        stringFree(&elementAsString);
+        if (i + vector->elementSize != byteSize)
+        {
+            stringPushMany(&result, ", ");
+        }
+    }
+    stringPushMany(&result, " ]");
+
+    return result;
+}
+
+String stringToString(String *string)
+{
+    String result;
+    stringInitialize(&result);
+    stringPush(&result, '\"');
+    stringPushMany(&result, string->start);
+    stringPush(&result, '\"');
+    return result;
 }

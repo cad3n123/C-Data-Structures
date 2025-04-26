@@ -106,3 +106,8 @@ bool vectorAppend(Vector *destination, Vector *source)
 
     return true;
 }
+
+size_t vectorByteSize(Vector *vector)
+{
+    return vector->length * vector->elementSize;
+}

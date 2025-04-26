@@ -9,19 +9,34 @@ typedef struct Package
     String message;
 } Package;
 
+int compareInt(const void *a, const void *b);
+String intToString(const void *i);
+
 int main()
 {
-    LinkedList packages;
-    linkedListInitialize(&packages, sizeof(Package));
-    linkedListPushBack(&packages, &(Package){stringFromCString("Hello from person 1")});
-    linkedListPushBack(&packages, &(Package){stringFromCString("Hello from person 2")});
-    linkedListPushBack(&packages, &(Package){stringFromCString("Hello from person 3")});
-
-    Package package;
-    while (linkedListPopFront(&packages, &package))
-    {
-        printf("%s\n", package.message.start);
-    }
+    BinarySearchTree bst;
+    binarySearchTreeInitialize(&bst, sizeof(int), compareInt);
+    int item = 1;
+    binarySearchTreeInsert(&bst, &item);
+    item = 3;
+    binarySearchTreeInsert(&bst, &item);
+    item = -1;
+    binarySearchTreeInsert(&bst, &item);
+    printf("%s", binarySearchTreeToString(&bst, intToString)->start);
 
     return 0;
+}
+
+int compareInt(const void *a, const void *b)
+{
+    int intA = *(const int *)a;
+    int intB = *(const int *)b;
+    return (intA > intB) - (intA < intB);
+}
+String intToString(const void *i)
+{
+    const int *intPtr = (const int *)i;
+    char buffer[32];
+    snprintf(buffer, sizeof(buffer), "%d", *intPtr);
+    return stringFromCString(buffer);
 }

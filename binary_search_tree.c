@@ -20,22 +20,22 @@ static bool binaryTreeNodeInitialize(BinaryTreeNode *node, const void *value, si
     return true;
 }
 
-static BinaryTreeNode **chooseNode(BinaryTreeNode *node, const void *item, int comparisonResult)
+static BinaryTreeNode **chooseNode(BinaryTreeNode **node, const void *item, int comparisonResult)
 {
     switch (comparisonResult)
     {
     case 1: // Greater
-        return &node->right;
+        return &(*node)->right;
     case 0: // Equal
-        return &node;
+        return node;
     case -1: // Less Than
-        return &node->left;
+        return &(*node)->left;
     default:
         return NULL;
     }
 }
 
-static BinaryTreeNode **binaryTreeNodeSearch(BinarySearchTree *tree, const void *item)
+static BinaryTreeNode **binaryTreeNodeSearch(const BinarySearchTree *tree, const void *item)
 {
     if (tree == NULL || tree->root == NULL || item == NULL)
         return NULL;
@@ -60,6 +60,80 @@ static void binaryTreeNodeFreeRecursive(BinaryTreeNode *node)
     binaryTreeNodeFreeRecursive(node->right);
     free(node->value);
     free(node);
+}
+
+static void binaryTreeNodeApplyRecursive(BinaryTreeNode *node, void (*function)(void *element, size_t count))
+{
+    if (node == NULL || function == NULL)
+        return;
+    binaryTreeNodeApplyRecursive(node->left, function);
+    function(&node->value, node->count);
+    binaryTreeNodeApplyRecursive(node->right, function);
+}
+
+static BinaryTreeNode *binaryTreeNodeMapRecursive(BinaryTreeNode *node, void *(*function)(void *element, size_t count), size_t elementSize)
+{
+    if (node == NULL || function == NULL)
+        return NULL;
+
+    BinaryTreeNode *result = malloc(sizeof *result);
+    if (result == NULL)
+        return NULL;
+    binaryTreeNodeInitialize(result, function(node->value, node->count), node->count, elementSize);
+    if (node->left == NULL)
+        result->left = NULL;
+    else
+    {
+        result->left = binaryTreeNodeMapRecursive(node->left, function, elementSize);
+        if (result->left == NULL)
+            return NULL;
+    }
+    if (node->right == NULL)
+        result->right = NULL;
+    else
+    {
+        result->right = binaryTreeNodeMapRecursive(node->right, function, elementSize);
+        if (result->right == NULL)
+            return NULL;
+    }
+
+    return result;
+}
+
+static Vector *binaryTreeNodeToVectorRecursive(BinaryTreeNode *node, size_t elementSize)
+{
+    Vector *vector = malloc(sizeof *vector);
+    if (vector == NULL)
+        return NULL;
+
+    vectorInitialize(vector, elementSize);
+    if (node->left != NULL)
+    {
+        Vector *left = binaryTreeNodeToVectorRecursive(node->left, elementSize);
+        if (left == NULL)
+        {
+            free(vector);
+            return NULL;
+        }
+        vectorPushMany(vector, left->start, left->length);
+        vectorFree(left);
+        free(left);
+    }
+    vectorPush(vector, node->value);
+    if (node->right != NULL)
+    {
+        Vector *right = binaryTreeNodeToVectorRecursive(node->right, elementSize);
+        if (right == NULL)
+        {
+            vectorFree(vector);
+            free(vector);
+            return NULL;
+        }
+        vectorPushMany(vector, right->start, right->length);
+        vectorFree(right);
+        free(right);
+    }
+    return vector;
 }
 
 bool binarySearchTreeInitialize(BinarySearchTree *tree, size_t elementSize, int (*comparator)(const void *a, const void *b))
@@ -95,7 +169,7 @@ bool binarySearchTreeInsert(BinarySearchTree *tree, const void *item)
     while (true)
     {
         int comparisonResult = tree->comparator(item, node->value);
-        BinaryTreeNode **childNodePtr = chooseNode(node, item, comparisonResult);
+        BinaryTreeNode **childNodePtr = chooseNode(&node, item, comparisonResult);
         if (childNodePtr == NULL)
             return false;
         BinaryTreeNode *childNode = *childNodePtr;
@@ -176,4 +250,49 @@ void binarySearchTreeFree(BinarySearchTree *tree)
     tree->elementSize = 0;
     tree->comparator = NULL;
     tree->root = NULL;
+}
+
+void binarySearchTreeApply(BinarySearchTree *tree, void (*function)(void *element, size_t count))
+{
+    if (tree == NULL || function == NULL)
+        return;
+    binaryTreeNodeApplyRecursive(tree->root, function);
+}
+
+Vector *binarySearchTreeToVector(BinarySearchTree *tree)
+{
+    return binaryTreeNodeToVectorRecursive(tree->root, tree->elementSize);
+}
+
+String *binarySearchTreeToString(BinarySearchTree *tree, String (*elementToString)(const void *element))
+{
+    Vector *vector = binarySearchTreeToVector(tree);
+    if (vector == NULL)
+        return NULL;
+    String *result = malloc(sizeof *result);
+    if (result == NULL)
+        return NULL;
+    String stackResult = vectorToString(vector, elementToString);
+    vectorFree(vector);
+    free(vector);
+    memcpy(result, &stackResult, sizeof(String));
+    return result;
+}
+
+BinarySearchTree *binarySearchTreeMap(BinarySearchTree *tree, void *(*function)(void *element, size_t count), int (*comparator)(const void *a, const void *b))
+{
+    if (tree == NULL || function == NULL)
+        return NULL;
+    BinarySearchTree *result = malloc(sizeof *result);
+    if (result == NULL)
+        return NULL;
+    binarySearchTreeInitialize(result, tree->elementSize, comparator);
+    if (tree->root != NULL)
+    {
+        result->root = binaryTreeNodeMapRecursive(tree->root, function, result->elementSize);
+        if (result->root == NULL)
+            return NULL;
+    }
+
+    return result;
 }
