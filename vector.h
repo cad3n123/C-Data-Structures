@@ -12,7 +12,7 @@ typedef struct Vector
 } Vector;
 
 bool vectorInitialize(Vector *vector, size_t elementSize);
-bool vectorPush(Vector *vector, void *item);
+bool vectorPush(Vector *vector, const void *item);
 bool vectorPushMany(Vector *vector, const void *items, size_t amount);
 bool vectorSetCapacity(Vector *vector, size_t newCapacity);
 void *vectorPop(Vector *vector, void *out);

@@ -7,6 +7,14 @@ bool stringInitialize(String *string)
     return vectorInitialize(string, sizeof(char));
 }
 
+String stringFromCString(const char *chars)
+{
+    String result;
+    stringInitialize(&result);
+    stringPushMany(&result, chars);
+    return result;
+}
+
 bool stringPush(String *string, char c)
 {
     return vectorPush(string, &c);

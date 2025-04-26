@@ -5,6 +5,9 @@
 
 bool vectorInitialize(Vector *vector, size_t elementSize)
 {
+    if (vector == NULL)
+        return false;
+
     vector->capacity = 10;
     vector->start = malloc(vector->capacity * elementSize);
     if (vector->start == NULL)
@@ -16,7 +19,7 @@ bool vectorInitialize(Vector *vector, size_t elementSize)
     return true;
 }
 
-bool vectorPush(Vector *vector, void *item)
+bool vectorPush(Vector *vector, const void *item)
 {
     if (vector->length == SIZE_MAX || vector->start == NULL || (vector->length >= vector->capacity && !vectorSetCapacity(vector, 2 * vector->capacity)))
         return false;
