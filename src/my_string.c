@@ -1,4 +1,4 @@
-#include "string.h"
+#include "my_string.h"
 #include "vector.h"
 #include <string.h>
 
@@ -77,4 +77,9 @@ String stringToString(String *string)
     stringPushMany(&result, string->start);
     stringPush(&result, '\"');
     return result;
+}
+
+char *stringToCString(String *string)
+{
+    return (char *)string->start;
 }

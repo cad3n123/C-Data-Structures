@@ -1,5 +1,5 @@
 #include "linked_list.h"
-#include "string.h"
+#include "my_string.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>

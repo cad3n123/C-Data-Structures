@@ -13,3 +13,4 @@ void stringFree(String *string);
 bool stringAppend(String *destination, String *source);
 String stringToString(String *string);
 String vectorToString(Vector *vector, String (*elementToString)(const void *element));
+char *stringToCString(String *string);

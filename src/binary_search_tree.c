@@ -35,19 +35,19 @@ static BinaryTreeNode **chooseNode(BinaryTreeNode **node, const void *item, int 
     }
 }
 
-static BinaryTreeNode **binaryTreeNodeSearch(const BinarySearchTree *tree, const void *item)
+static BinaryTreeNode *const *binaryTreeNodeSearch(const BinarySearchTree *tree, const void *item)
 {
     if (tree == NULL || tree->root == NULL || item == NULL)
         return NULL;
 
-    BinaryTreeNode **result = &tree->root;
+    BinaryTreeNode *const *result = &tree->root;
     while (!(result == NULL || *result == NULL))
     {
         int comparisonResult = tree->comparator(item, (*result)->value);
         if (comparisonResult == 0)
             return result;
 
-        result = chooseNode(result, item, comparisonResult);
+        result = (BinaryTreeNode *const *)chooseNode((BinaryTreeNode **)result, item, comparisonResult);
     }
     return NULL;
 }
@@ -203,7 +203,7 @@ bool binarySearchTreeInsert(BinarySearchTree *tree, const void *item)
 
 void *binarySearchTreeSearch(const BinarySearchTree *tree, const void *item)
 {
-    BinaryTreeNode **result = binaryTreeNodeSearch(tree, item);
+    BinaryTreeNode *const *result = binaryTreeNodeSearch(tree, item);
     if (result == NULL || *result == NULL)
         return NULL;
     return (*result)->value;
@@ -214,7 +214,7 @@ void *binarySearchTreeRemove(BinarySearchTree *tree, const void *item)
     if (tree == NULL || tree->root == NULL || item == NULL)
         return NULL;
 
-    BinaryTreeNode **nodeToRemove = binaryTreeNodeSearch(tree, item);
+    BinaryTreeNode **nodeToRemove = (BinaryTreeNode **)binaryTreeNodeSearch(tree, item);
     if (nodeToRemove == NULL || *nodeToRemove == NULL)
         return NULL;
     if ((*nodeToRemove)->count > 1)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "string.h"
+#include "my_string.h"
 #include <stdbool.h>
 #include <stddef.h>
 

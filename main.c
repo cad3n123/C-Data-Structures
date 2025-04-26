@@ -1,5 +1,5 @@
 #include "vector.h"
-#include "string.h"
+#include "my_string.h"
 #include "linked_list.h"
 #include "binary_search_tree.h"
 #include <stdio.h>
@@ -31,7 +31,7 @@ int main()
     binarySearchTreeInsert(&bst, &item);
     binarySearchTreeInsert(&bst, &item);
     binarySearchTreeInsert(&bst, &item);
-    printf("%s", binarySearchTreeToString(&bst, intToString)->start);
+    printf("%s", stringToCString(binarySearchTreeToString(&bst, intToString)));
 
     return 0;
 }

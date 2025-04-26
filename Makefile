@@ -1,5 +1,7 @@
-# Makefile
+CC = gcc
+CFLAGS = -Iinclude -Wall
 
-%: %.c vector.c string.c linked_list.c binary_search_tree.c
-	gcc $^ -o $@
+SRC = $(wildcard src/*.c)
 
+%: %.c $(SRC)
+	$(CC) $(CFLAGS) $^ -o $@
