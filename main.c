@@ -1,6 +1,7 @@
 #include "vector.h"
 #include "string.h"
 #include "linked_list.h"
+#include "binary_search_tree.h"
 #include <stdio.h>
 
 typedef struct Package
