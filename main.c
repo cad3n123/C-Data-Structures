@@ -11,6 +11,7 @@ typedef struct Package
 
 int compareInt(const void *a, const void *b);
 String intToString(const void *i);
+void doubleInt(void *element, size_t count);
 
 int main()
 {
@@ -21,6 +22,14 @@ int main()
     item = 3;
     binarySearchTreeInsert(&bst, &item);
     item = -1;
+    binarySearchTreeInsert(&bst, &item);
+    binarySearchTreeApply(&bst, doubleInt);
+    binarySearchTreeInsert(&bst, &item);
+    binarySearchTreeInsert(&bst, &item);
+    binarySearchTreeInsert(&bst, &item);
+    binarySearchTreeInsert(&bst, &item);
+    binarySearchTreeInsert(&bst, &item);
+    binarySearchTreeInsert(&bst, &item);
     binarySearchTreeInsert(&bst, &item);
     printf("%s", binarySearchTreeToString(&bst, intToString)->start);
 
@@ -39,4 +48,9 @@ String intToString(const void *i)
     char buffer[32];
     snprintf(buffer, sizeof(buffer), "%d", *intPtr);
     return stringFromCString(buffer);
+}
+void doubleInt(void *element, size_t count)
+{
+    int *intPtr = (int *)element;
+    (*intPtr) *= 2;
 }

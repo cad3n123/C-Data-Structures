@@ -67,7 +67,7 @@ static void binaryTreeNodeApplyRecursive(BinaryTreeNode *node, void (*function)(
     if (node == NULL || function == NULL)
         return;
     binaryTreeNodeApplyRecursive(node->left, function);
-    function(&node->value, node->count);
+    function(node->value, node->count);
     binaryTreeNodeApplyRecursive(node->right, function);
 }
 
@@ -119,7 +119,10 @@ static Vector *binaryTreeNodeToVectorRecursive(BinaryTreeNode *node, size_t elem
         vectorFree(left);
         free(left);
     }
-    vectorPush(vector, node->value);
+    for (size_t i = 0; i < node->count; i++)
+    {
+        vectorPush(vector, node->value);
+    }
     if (node->right != NULL)
     {
         Vector *right = binaryTreeNodeToVectorRecursive(node->right, elementSize);
