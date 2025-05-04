@@ -1,13 +1,15 @@
-#include "linked_list.h"
-#include "my_string.h"
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
+// Copyright 2025 Caden Crowson
 
-bool linkedListInitialize(LinkedList *linkedList, size_t elementSize)
-{
-    if (linkedList == NULL)
-        return false;
+#include "../include/linked_list.h"
+
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "../include/my_string.h"
+
+bool linkedListInitialize(LinkedList *linkedList, size_t elementSize) {
+    if (linkedList == NULL) return false;
 
     memset(linkedList, 0, sizeof *linkedList);
     linkedList->elementSize = elementSize;
@@ -15,18 +17,14 @@ bool linkedListInitialize(LinkedList *linkedList, size_t elementSize)
     return true;
 }
 
-bool linkedListPushBack(LinkedList *linkedList, const void *item)
-{
-    if (linkedList == NULL || item == NULL)
-        return false;
+bool linkedListPushBack(LinkedList *linkedList, const void *item) {
+    if (linkedList == NULL || item == NULL) return false;
 
     LinkedListNode *node = malloc(sizeof *node);
-    if (node == NULL)
-        return false;
+    if (node == NULL) return false;
 
     node->value = malloc(linkedList->elementSize);
-    if (node->value == NULL)
-    {
+    if (node->value == NULL) {
         free(node);
         return false;
     }
@@ -43,16 +41,12 @@ bool linkedListPushBack(LinkedList *linkedList, const void *item)
     return true;
 }
 
-bool linkedListPopFront(LinkedList *linkedList, void *const out)
-{
-    if (linkedList == NULL || linkedList->start == NULL)
-        return false;
+bool linkedListPopFront(LinkedList *linkedList, void *const out) {
+    if (linkedList == NULL || linkedList->start == NULL) return false;
     LinkedListNode *start = linkedList->start;
 
-    if (out != NULL)
-        memcpy(out, start->value, linkedList->elementSize);
-    if (linkedList->start == linkedList->end)
-        linkedList->end = NULL;
+    if (out != NULL) memcpy(out, start->value, linkedList->elementSize);
+    if (linkedList->start == linkedList->end) linkedList->end = NULL;
     linkedList->start = linkedList->start->next;
 
     free(start->value);
@@ -60,28 +54,25 @@ bool linkedListPopFront(LinkedList *linkedList, void *const out)
     return true;
 }
 
-void linkedListFree(LinkedList *linkedList)
-{
-    while (linkedListPopFront(linkedList, NULL))
-        ;
+void linkedListFree(LinkedList *linkedList) {
+    while (linkedListPopFront(linkedList, NULL)) {
+    }
 
     linkedList->elementSize = 0;
 }
 
-String linkedListToString(LinkedList *linkedList, String (*elementToString)(const void *element))
-{
+String linkedListToString(LinkedList *linkedList,
+                          String (*elementToString)(const void *element)) {
     String result = stringFromCString("[ ");
 
     LinkedListNode *node = linkedList->start;
 
-    while (node != NULL)
-    {
-        String elementAsString = elementToString(&node->value);
+    while (node != NULL) {
+        String elementAsString = elementToString(node->value);
         stringPushMany(&result, elementAsString.start);
         stringFree(&elementAsString);
         node = node->next;
-        if (node != NULL)
-            stringPushMany(&result, ", ");
+        if (node != NULL) stringPushMany(&result, ", ");
     }
 
     stringPushMany(&result, " ]");

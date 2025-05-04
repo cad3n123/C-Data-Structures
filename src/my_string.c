@@ -1,66 +1,56 @@
-#include "my_string.h"
-#include "vector.h"
+// Copyright 2025 Caden Crowson
+
+#include "../include/my_string.h"
+
 #include <string.h>
 
-bool stringInitialize(String *string)
-{
+#include "../include/vector.h"
+
+bool stringInitialize(String *string) {
     return vectorInitialize(string, sizeof(char));
 }
 
-String stringFromCString(const char *chars)
-{
+String stringFromCString(const char *chars) {
     String result;
     stringInitialize(&result);
     stringPushMany(&result, chars);
     return result;
 }
 
-bool stringPush(String *string, char c)
-{
-    if (string->length > 0)
-        string->length--;
-    if (!vectorPush(string, &c))
-        return false;
+bool stringPush(String *string, char c) {
+    if (string->length > 0) string->length--;
+    if (!vectorPush(string, &c)) return false;
     char nullChar = '\0';
     return vectorPush(string, &nullChar);
 }
 
-bool stringPushMany(String *string, const char *chars)
-{
-    if (string->length != 0)
-        (void)stringPop(string);
+bool stringPushMany(String *string, const char *chars) {
+    if (string->length != 0) (void)stringPop(string);
     return vectorPushMany(string, chars, strlen(chars) + 1);
 }
 
-char stringPop(String *string)
-{
+char stringPop(String *string) {
     char out;
     vectorPop(string, (void *)&out);
     return out;
 }
 
-void stringFree(String *string)
-{
-    vectorFree(string);
-}
+void stringFree(String *string) { vectorFree(string); }
 
-bool stringAppend(String *destination, String *source)
-{
+bool stringAppend(String *destination, String *source) {
     return vectorAppend(destination, source);
 }
 
-String vectorToString(Vector *vector, String (*elementToString)(const void *element))
-{
+String vectorToString(Vector *vector,
+                      String (*elementToString)(const void *element)) {
     String result = stringFromCString("[ ");
 
     size_t byteSize = vectorByteSize(vector);
-    for (size_t i = 0; i < byteSize; i += vector->elementSize)
-    {
+    for (size_t i = 0; i < byteSize; i += vector->elementSize) {
         String elementAsString = elementToString((char *)vector->start + i);
         stringPushMany(&result, elementAsString.start);
         stringFree(&elementAsString);
-        if (i + vector->elementSize != byteSize)
-        {
+        if (i + vector->elementSize != byteSize) {
             stringPushMany(&result, ", ");
         }
     }
@@ -69,8 +59,7 @@ String vectorToString(Vector *vector, String (*elementToString)(const void *elem
     return result;
 }
 
-String stringToString(String *string)
-{
+String stringToString(String *string) {
     String result;
     stringInitialize(&result);
     stringPush(&result, '\"');
@@ -79,7 +68,4 @@ String stringToString(String *string)
     return result;
 }
 
-char *stringToCString(String *string)
-{
-    return (char *)string->start;
-}
+char *stringToCString(String *string) { return (char *)string->start; }

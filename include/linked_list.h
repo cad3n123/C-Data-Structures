@@ -1,8 +1,11 @@
+// Copyright 2025 Caden Crowson
+
 #pragma once
 
-#include "my_string.h"
 #include <stdbool.h>
 #include <stddef.h>
+
+#include "../include/my_string.h"
 
 // All items pushed into the list are deep-copied.
 // The caller retains ownership of the original item passed to PushBack.
@@ -10,15 +13,13 @@
 
 typedef struct LinkedListNode LinkedListNode;
 
-typedef struct LinkedList
-{
+typedef struct LinkedList {
     LinkedListNode *start;
     LinkedListNode *end;
     size_t elementSize;
 } LinkedList;
 
-struct LinkedListNode
-{
+struct LinkedListNode {
     void *value;
     LinkedListNode *next;
 };
@@ -28,4 +29,5 @@ bool linkedListPushBack(LinkedList *linkedList, const void *item);
 bool linkedListPopFront(LinkedList *linkedList, void *const out);
 void linkedListFree(LinkedList *linkedList);
 size_t linkedListByteSize(LinkedList *linkedList);
-String linkedListToString(LinkedList *linkedList, String (*elementToString)(const void *element));
+String linkedListToString(LinkedList *linkedList,
+                          String (*elementToString)(const void *element));

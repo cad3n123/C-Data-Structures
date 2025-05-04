@@ -1,6 +1,8 @@
+// Copyright 2025 Caden Crowson
+
 #pragma once
 
-#include "vector.h"
+#include "../include/vector.h"
 
 typedef Vector String;
 
@@ -12,5 +14,6 @@ char stringPop(String *string);
 void stringFree(String *string);
 bool stringAppend(String *destination, String *source);
 String stringToString(String *string);
-String vectorToString(Vector *vector, String (*elementToString)(const void *element));
+String vectorToString(Vector *vector,
+                      String (*elementToString)(const void *element));
 char *stringToCString(String *string);

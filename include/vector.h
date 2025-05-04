@@ -1,10 +1,11 @@
+// Copyright 2025 Caden Crowson
+
 #pragma once
 
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef struct Vector
-{
+typedef struct Vector {
     void *start;
     size_t capacity;
     size_t length;
